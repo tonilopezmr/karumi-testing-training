@@ -13,6 +13,9 @@ android:
     - extra-android-m2repository
     - sys-img-armeabi-v7a-android-19
 
+licenses:
+    - 'android-sdk-license-.+'
+
 
 script: 
   - ./gradlew check
