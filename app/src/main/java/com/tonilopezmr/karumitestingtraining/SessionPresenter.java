@@ -34,7 +34,7 @@ public class SessionPresenter {
   }
 
   public void init() {
-    if (sessionPreferences.isUserLogin()) {
+    if (sessionPreferences.isUserLogged()) {
       userLogged();
     } else {
       userNotLogged();
@@ -46,7 +46,6 @@ public class SessionPresenter {
     view.hideLoader();
     view.enableLogoutButton(true);
     view.enableLoginButton(false);
-    sessionPreferences.setLoginSession(true);
   }
 
   private void userNotLogged() {
@@ -64,6 +63,7 @@ public class SessionPresenter {
       @Override
       public void onSuccess() {
         userLogged();
+        sessionPreferences.setLoginSession(true);
       }
 
       @Override
@@ -82,6 +82,7 @@ public class SessionPresenter {
       @Override
       public void onSuccess() {
         userNotLogged();
+        sessionPreferences.setLoginSession(false);
       }
 
       @Override

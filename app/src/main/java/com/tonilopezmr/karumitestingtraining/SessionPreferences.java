@@ -16,7 +16,7 @@ class SessionPreferences {
     edit.apply();
   }
 
-  public boolean isUserLogin() {
+  public boolean isUserLogged() {
     return sharedPreferences.getBoolean("login", false);
   }
 
