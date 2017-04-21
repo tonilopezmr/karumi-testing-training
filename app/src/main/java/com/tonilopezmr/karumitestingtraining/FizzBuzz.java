@@ -7,15 +7,29 @@ public class FizzBuzz {
   public static final String BUZZ = "Buzz";
 
   public static String fizzBuzz(int num) {
-    if ((num % 3 == 0) && (num % 5 == 0)) {
-      return FIZZ_BUZZ;
-    } else if (num % 3 == 0) {
-      return FIZZ;
-    } else if (num % 5 == 0) {
-      return BUZZ;
-    } else {
-      return String.valueOf(num);
+    String result = "";
+
+    if (isFizz(num)) {
+      result += FIZZ;
     }
+
+    if (isBuzz(num)) {
+      result += BUZZ;
+    }
+
+    if (!isFizz(num) && !isBuzz(num)){
+      result = String.valueOf(num);
+    }
+
+    return result;
+  }
+
+  private static boolean isBuzz(int num) {
+    return num % 5 == 0;
+  }
+
+  private static boolean isFizz(int num) {
+    return num % 3 == 0;
   }
 
 }
