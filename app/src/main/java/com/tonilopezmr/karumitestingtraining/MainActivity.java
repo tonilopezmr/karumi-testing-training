@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-    final SessionApiClient sessionApiClient = new SessionApiClient(new ThreadExecutor());
+    final SessionApiClient sessionApiClient = new SessionApiClient(new ThreadExecutor(), new TimeMachine());
 
     email = ((EditText) findViewById(R.id.emailEditText));
     password = ((EditText) findViewById(R.id.passwordEditText));
