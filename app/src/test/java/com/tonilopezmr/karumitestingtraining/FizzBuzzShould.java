@@ -21,7 +21,7 @@ public class FizzBuzzShould {
 
   @Test
   public void
-  return_same_input_number_convert_to_string() throws Exception {
+  return_number_to_string_when_is_not_multiple_of_five_and_three() throws Exception {
     assertThat(FizzBuzz.fizzBuzz(2), is("2"));
   }
 
