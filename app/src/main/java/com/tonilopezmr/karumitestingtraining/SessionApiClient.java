@@ -1,6 +1,5 @@
 package com.tonilopezmr.karumitestingtraining;
 
-import android.os.Handler;
 import android.os.SystemClock;
 
 public class SessionApiClient {
@@ -11,10 +10,14 @@ public class SessionApiClient {
     void onError();
   }
 
-  public void login(final String email, final String password, final Callback callback) {
+  private ThreadExecutor threadExecutor;
 
-    Handler handler = new Handler();
-    handler.postDelayed(new Runnable() {
+  public SessionApiClient(ThreadExecutor threadExecutor) {
+    this.threadExecutor = threadExecutor;
+  }
+
+  public void login(final String email, final String password, final Callback callback) {
+    threadExecutor.post(new Runnable() {
       @Override
       public void run() {
         if (email.equals("toni") && password.equals("the3rocks")) {
@@ -23,13 +26,11 @@ public class SessionApiClient {
           callback.onError();
         }
       }
-    }, 2000);
-
+    });
   }
 
   public void logout(final Callback callback) {
-    Handler handler = new Handler();
-    handler.postDelayed(new Runnable() {
+    threadExecutor.post(new Runnable() {
       @Override
       public void run() {
         if ((SystemClock.elapsedRealtime() / 60 ) % 2 == 0) {
@@ -38,7 +39,7 @@ public class SessionApiClient {
           callback.onError();
         }
       }
-    }, 2000);
+    });
   }
 
 }

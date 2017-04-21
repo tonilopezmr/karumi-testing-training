@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
@@ -17,18 +18,22 @@ public class MainActivity extends AppCompatActivity {
   Button login;
   Button logOut;
 
+  ProgressBar progressBar;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-    final SessionApiClient sessionApiClient = new SessionApiClient();
+    final SessionApiClient sessionApiClient = new SessionApiClient(new ThreadExecutor());
 
     email = ((EditText) findViewById(R.id.emailEditText));
     password = ((EditText) findViewById(R.id.passwordEditText));
 
     login = ((Button) findViewById(R.id.login));
     logOut = ((Button) findViewById(R.id.logOut));
+
+    progressBar = ((ProgressBar) findViewById(R.id.progressBar));
 
     if (isUserLogin()) {
       userLogin();
@@ -40,17 +45,20 @@ public class MainActivity extends AppCompatActivity {
       @Override
       public void onClick(View v) {
         login.setEnabled(false);
-        sessionApiClient.login(email.getText().toString(), password.getText().toString(), new SessionApiClient.Callback() {
+        progressBar.setVisibility(View.VISIBLE);
+        sessionApiClient.login(email.getText().toString().trim(), password.getText().toString().trim(), new SessionApiClient.Callback() {
           @Override
           public void onSuccess() {
             userLogin();
             storeLogin(true);
+            progressBar.setVisibility(View.GONE);
           }
 
           @Override
           public void onError() {
             Toast.makeText(MainActivity.this, "LOGIN ERROR", Toast.LENGTH_SHORT).show();
             login.setEnabled(true);
+            progressBar.setVisibility(View.GONE);
           }
         });
       }
@@ -60,17 +68,20 @@ public class MainActivity extends AppCompatActivity {
       @Override
       public void onClick(View v) {
         logOut.setEnabled(false);
+        progressBar.setVisibility(View.VISIBLE);
         sessionApiClient.logout(new SessionApiClient.Callback() {
           @Override
           public void onSuccess() {
             notLogin();
             storeLogin(false);
+            progressBar.setVisibility(View.GONE);
           }
 
           @Override
           public void onError() {
             Toast.makeText(MainActivity.this, "LOGOUT ERROR", Toast.LENGTH_SHORT).show();
             logOut.setEnabled(true);
+            progressBar.setVisibility(View.GONE);
           }
         });
       }
