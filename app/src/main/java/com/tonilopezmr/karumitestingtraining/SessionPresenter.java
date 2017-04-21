@@ -14,20 +14,47 @@ public class SessionPresenter {
     void showForm();
 
     void hideForm();
+
     void showLoginError();
 
     void showLogoutError();
   }
 
+  private SessionPreferences sessionPreferences;
   private SessionApiClient sessionApiClient;
   private View view;
 
-  public SessionPresenter(SessionApiClient sessionApiClient) {
+  public SessionPresenter(SessionPreferences sessionPreferences, SessionApiClient sessionApiClient) {
+    this.sessionPreferences = sessionPreferences;
     this.sessionApiClient = sessionApiClient;
   }
 
-  public void setView(View view){
+  public void setView(View view) {
     this.view = view;
+  }
+
+  public void init() {
+    if (sessionPreferences.isUserLogin()) {
+      userLogged();
+    } else {
+      userNotLogged();
+    }
+  }
+
+  private void userLogged() {
+    view.hideForm();
+    view.hideLoader();
+    view.enableLogoutButton(true);
+    view.enableLoginButton(false);
+    sessionPreferences.setLoginSession(true);
+  }
+
+  private void userNotLogged() {
+    view.showForm();
+    view.hideLoader();
+    view.enableLoginButton(true);
+    view.enableLogoutButton(false);
+    sessionPreferences.setLoginSession(false);
   }
 
   public void login(String email, String name) {
@@ -36,9 +63,7 @@ public class SessionPresenter {
     sessionApiClient.login(email, name, new SessionApiClient.Callback() {
       @Override
       public void onSuccess() {
-        view.hideForm();
-        view.hideLoader();
-        view.enableLogoutButton(true);
+        userLogged();
       }
 
       @Override
@@ -56,9 +81,7 @@ public class SessionPresenter {
     sessionApiClient.logout(new SessionApiClient.Callback() {
       @Override
       public void onSuccess() {
-        view.showForm();
-        view.hideLoader();
-        view.enableLoginButton(true);
+        userNotLogged();
       }
 
       @Override

@@ -1,6 +1,5 @@
 package com.tonilopezmr.karumitestingtraining;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -24,10 +23,6 @@ public class MainActivity extends AppCompatActivity implements SessionPresenter.
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-    final SessionApiClient sessionApiClient = new SessionApiClient(new ThreadExecutor(), new TimeMachine());
-    final SessionPresenter presenter = new SessionPresenter(sessionApiClient);
-    presenter.setView(this);
-
     email = ((EditText) findViewById(R.id.emailEditText));
     password = ((EditText) findViewById(R.id.passwordEditText));
 
@@ -36,11 +31,11 @@ public class MainActivity extends AppCompatActivity implements SessionPresenter.
 
     progressBar = ((ProgressBar) findViewById(R.id.progressBar));
 
-    if (isUserLogin()) {
-      userLogin();
-    } else {
-      notLogin();
-    }
+    SessionPreferences sessionPreferences = new SessionPreferences(getSharedPreferences("karumi-testing-training", 1));
+    final SessionApiClient sessionApiClient = new SessionApiClient(new ThreadExecutor(), new TimeMachine());
+    final SessionPresenter presenter = new SessionPresenter(sessionPreferences, sessionApiClient);
+    presenter.setView(this);
+    presenter.init();
 
     login.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -55,34 +50,6 @@ public class MainActivity extends AppCompatActivity implements SessionPresenter.
         presenter.logout();
       }
     });
-  }
-
-  private void notLogin() {
-    email.setVisibility(View.VISIBLE);
-    password.setVisibility(View.VISIBLE);
-    login.setEnabled(true);
-    logOut.setEnabled(false);
-  }
-
-  private void userLogin() {
-    email.setVisibility(View.INVISIBLE);
-    password.setVisibility(View.INVISIBLE);
-    login.setEnabled(false);
-    logOut.setEnabled(true);
-    email.setText("");
-    password.setText("");
-  }
-
-  private void storeLogin(boolean isLogin) {
-    SharedPreferences sharedPreferences = getSharedPreferences("karumi-testing-training", 1);
-    SharedPreferences.Editor edit = sharedPreferences.edit();
-    edit.putBoolean("login", isLogin);
-    edit.apply();
-  }
-
-  private boolean isUserLogin() {
-    SharedPreferences sharedPreferences = getSharedPreferences("karumi-testing-training", 1);
-    return sharedPreferences.getBoolean("login", false);
   }
 
   @Override
